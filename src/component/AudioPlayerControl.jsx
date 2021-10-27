@@ -1,11 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause, faForward, faBackward } from "@fortawesome/free-solid-svg-icons";
 
-
 // Play / Pause, Next, Prev Button
 const AudioPlayerControl = ({ isPlaying, setIsplaying, nextTrack, prevTrack }) => {
     return (
-        <div className="flex flex-row">
+        <div className="flex flex-row bg-gray-900 rounded-md mx-2">
             <FontAwesomeIcon icon={faBackward}
                 className="text-gray-300 hover:text-white transition duration-300 text-4xl m-4 cursor-pointer"
                 onClick={prevTrack} />

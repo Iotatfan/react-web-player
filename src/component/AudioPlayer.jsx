@@ -1,24 +1,16 @@
 import { useState, useRef, useEffect } from "react"
-import Tracks from "../tracks.json"
 import AudioPlayerControl from "./AudioPlayerControl";
 import TrackInfo from "./TrackInfo";
 import VolumeSlider from "./VolumeSlider";
 
-function AudioPlayer() {
-    const [isPlaying, setIsplaying] = useState(false)
+const streamUrl = 'https://web-player-backend.herokuapp.com/stream/'
+
+function AudioPlayer({tracks}) {
+    const [isPlaying, setIsplaying] = useState(true)
     const [trackIndex, setTrackIndex] = useState(0)
-    const streamUrl = 'http://localhost:3030/stream/'
-    const playlistUrl = 'http://localhost:3030/playlist/'
-
-    // Put Playlist URL
-    // const tracks = getPlaylist()
-    const tracks = Tracks
     const { title, author, audioSrc } = tracks[trackIndex]
-    async function getPlaylist() {
-        return await fetch(playlistUrl)
-    }
 
-    // Get Playlist's Track From Youtube
+    // Init Audio Player
     const audioRef = useRef(new Audio(`${streamUrl}${audioSrc}/`))
     audioRef.current.addEventListener("ended", (event) => {
         console.log("Playback Ended")
@@ -52,34 +44,28 @@ function AudioPlayer() {
         }
     }
     useEffect(() => {
-        audioRef.current.pause()
-        audioRef.current = new Audio(`${streamUrl}${audioSrc}`
-        )
+        console.log(`Playing ${title}`)
+        // audioRef.current = new Audio(`${streamUrl}${audioSrc}`)
+        audioRef.current.src = `${streamUrl}${audioSrc}`
         audioRef.current.play()
-    }, [trackIndex, audioSrc])
+    }, [trackIndex, audioSrc, title])
 
     return (
         <div className="flex flex-row justify-center my-4">
-            <div className="bg-gray-900 rounded-md mx-2">
-                <AudioPlayerControl
-                    isPlaying={isPlaying}
-                    setIsplaying={setIsplaying}
-                    nextTrack={nextTrack}
-                    prevTrack={prevTrack}
-                />
-            </div>
-            <div className=" flex flex-col justify-center items-start bg-gray-900 rounded-md mx-2 w-1/3">
-                <TrackInfo
-                    title={title}
-                    author={author}
-                    tracks={tracks}
-                />
-            </div>
-            <div className=" flex flex-col relative my-auto bg-gray-900 rounded-md mx-2">
-                <VolumeSlider
-                    audioRef={audioRef}
-                />
-            </div>
+            <AudioPlayerControl
+                isPlaying={isPlaying}
+                setIsplaying={setIsplaying}
+                nextTrack={nextTrack}
+                prevTrack={prevTrack}
+            />
+            <TrackInfo
+                title={title}
+                author={author}
+                track={tracks[trackIndex]}
+            />
+            <VolumeSlider
+                audioRef={audioRef}
+            />
         </div>
     );
 }
